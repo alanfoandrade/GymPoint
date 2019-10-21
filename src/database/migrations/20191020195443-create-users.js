@@ -10,11 +10,11 @@ module.exports = {
         primaryKey: true
       },
       name: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(100),
         allowNull: false
       },
       email: {
-        type: Sequelize.STRING(25),
+        type: Sequelize.STRING(100),
         allowNull: false
       },
       password_hash: {
