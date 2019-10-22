@@ -47,7 +47,7 @@ class StudentController {
     const student = await Student.findByPk(req.params.studentId);
 
     if (!student)
-      return res.status(400).json({ error: 'Estudante não encontrado' });
+      return res.status(401).json({ error: 'Estudante não encontrado' });
 
     // Se email estiver sendo alterado
     if (req.body.email !== student.email) {
@@ -57,7 +57,7 @@ class StudentController {
       });
 
       if (emailExists)
-        return res.status(400).json({ error: 'Email já cadastrado' });
+        return res.status(401).json({ error: 'Email já cadastrado' });
     }
 
     const { id, name, email, age, weight, height } = await student.update(
