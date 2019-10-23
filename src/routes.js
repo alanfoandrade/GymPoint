@@ -5,6 +5,7 @@ import authMiddleware from './app/middlewares/authMiddleware';
 import roleMiddleware from './app/middlewares/roleMiddleware';
 import PlanController from './app/controllers/PlanController';
 import EnrollmentController from './app/controllers/EnrollmentController';
+import CheckinController from './app/controllers/CheckinController';
 
 /**
  * Seta o auth_level requerido(role), que comparado com o auth_level do usuario logado
@@ -19,6 +20,10 @@ const roleStudent = roleMiddleware(3);
 const routes = new Router();
 
 routes.post('/auth', AuthController.store);
+
+// CheckinController
+routes.post('/students/:studentId/checkins', CheckinController.store);
+routes.get('/students/:studentId/checkins', CheckinController.index);
 
 // Apenas usuários logados tem acesso as proximas rotas
 routes.use(authMiddleware);

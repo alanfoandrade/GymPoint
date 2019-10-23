@@ -1,4 +1,4 @@
-import { startOfDay, parseISO, isBefore, addMonths, format } from 'date-fns';
+import { endOfDay, parseISO, isBefore, addMonths, format } from 'date-fns';
 import { Op } from 'sequelize';
 import pt from 'date-fns/locale/pt';
 import * as Yup from 'yup';
@@ -11,8 +11,8 @@ import EnrollMail from '../jobs/EnrollMail';
 class EnrollmentController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      student_id: Yup.integer(),
-      plan_id: Yup.integer(),
+      student_id: Yup.number(),
+      plan_id: Yup.number(),
       start_date: Yup.date()
     });
 
@@ -31,7 +31,7 @@ class EnrollmentController {
     if (!isPlan)
       return res.status(401).json({ message: 'Plano não encontrado' });
 
-    const startDate = startOfDay(parseISO(start_date));
+    const startDate = endOfDay(parseISO(start_date));
     const end_date = addMonths(startDate, isPlan.length);
     const enrollPrice = isPlan.price * isPlan.length;
 
@@ -56,7 +56,7 @@ class EnrollmentController {
         .status(401)
         .json({ message: 'Aluno já tem matrícula ativa para essa data' });
 
-    const { created_at, updated_at } = await Enrollment.create({
+    const { id, created_at, updated_at } = await Enrollment.create({
       ...req.body,
       start_date,
       end_date,
@@ -76,6 +76,7 @@ class EnrollmentController {
     const planTitle = isPlan.title;
     const planLength = isPlan.length;
     const planPrice = isPlan.price;
+    const enrollmentId = id;
 
     await QueueLib.add(EnrollMail.key, {
       studentName,
@@ -89,6 +90,7 @@ class EnrollmentController {
     });
 
     return res.json({
+      enrollmentId,
       studentName,
       studentEmail,
       planTitle,
@@ -113,8 +115,8 @@ class EnrollmentController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      student_id: Yup.integer().required(),
-      plan_id: Yup.integer().required(),
+      student_id: Yup.number().required(),
+      plan_id: Yup.number().required(),
       start_date: Yup.date().required()
     });
 
@@ -138,7 +140,7 @@ class EnrollmentController {
     if (!isPlan)
       return res.status(401).json({ message: 'Plano não encontrado' });
 
-    const startDate = startOfDay(parseISO(start_date));
+    const startDate = endOfDay(parseISO(start_date));
     const end_date = addMonths(startDate, isPlan.length);
     const enrollPrice = isPlan.price * isPlan.length;
 
