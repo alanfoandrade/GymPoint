@@ -7,11 +7,15 @@ import PlanController from './app/controllers/PlanController';
 import EnrollmentController from './app/controllers/EnrollmentController';
 
 /**
- * Seta o email que sera comparado com o email do usuario logado
+ * Seta o auth_level requerido(role), que comparado com o auth_level do usuario logado
  * ao utilizar as rotas abaixo do use(roleAdmin.authorization....)
  */
-const roleAdmin = roleMiddleware('admin@gympoint.com');
-
+const roleAdmin = roleMiddleware(0); // 0=admin 1=atendente 2=instrutor 3=aluno
+/*
+const roleProvider = roleMiddleware(1);
+const roleInstructor = roleMiddleware(2);
+const roleStudent = roleMiddleware(3);
+ */
 const routes = new Router();
 
 routes.post('/auth', AuthController.store);

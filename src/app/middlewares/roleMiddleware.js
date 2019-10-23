@@ -1,10 +1,10 @@
-// Compara se o email do usuario logado corresponde a role passada como parametro
+// Compara se o authLevel do usuario logado corresponde a role passada como parametro
 export default role => {
   const module = {
     authorization(req, res, next) {
-      if (role !== req.email)
+      if (role !== req.auth_level)
         return res.status(403).json({
-          message: 'Acesso não autorizado, apenas Admin tem permissão'
+          message: 'Acesso não autorizado'
         });
 
       return next();

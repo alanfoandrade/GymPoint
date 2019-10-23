@@ -11,13 +11,15 @@ module.exports = {
           name: 'Administrador',
           email: 'admin@gympoint.com',
           password_hash: bcrypt.hashSync('123456', 8),
+          auth_level: 0,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
-          name: 'Hacker',
-          email: 'hacker@gympoint.com',
+          name: 'Atendente',
+          email: 'atendente@gympoint.com',
           password_hash: bcrypt.hashSync('123456', 8),
+          auth_level: 1,
           created_at: new Date(),
           updated_at: new Date()
         }

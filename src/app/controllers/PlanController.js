@@ -1,7 +1,17 @@
+import * as Yup from 'yup';
 import Plan from '../models/Plan';
 
 class PlanController {
   async store(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      length: Yup.integer().required(),
+      price: Yup.number().required()
+    });
+
+    if (!(await schema.isValid(req.body)))
+      return res.status(400).json({ error: 'Erro de validação' });
+
     // Verifica se já existe o mesmo tipo de plano
     const PlanExists = await Plan.findOne({
       where: { title: req.body.title }
@@ -14,13 +24,13 @@ class PlanController {
     const {
       id,
       title,
-      duration,
+      length,
       price,
       created_at,
       updated_at
     } = await Plan.create(req.body);
 
-    return res.json({ id, title, duration, price, created_at, updated_at });
+    return res.json({ id, title, length, price, created_at, updated_at });
   }
 
   async index(req, res) {
@@ -29,8 +39,8 @@ class PlanController {
       where: {
         canceled_at: null
       },
-      order: ['duration'],
-      attributes: ['id', 'title', 'duration', 'price'],
+      order: ['length'],
+      attributes: ['id', 'title', 'length', 'price'],
       limit: 20,
       offset: (page - 1) * 20
     });
@@ -42,13 +52,22 @@ class PlanController {
   }
 
   async update(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string(),
+      length: Yup.integer(),
+      price: Yup.number()
+    });
+
+    if (!(await schema.isValid(req.body)))
+      return res.status(400).json({ error: 'Erro de validação' });
+
     const plan = await Plan.findByPk(req.params.planId);
 
     if (!plan) return res.status(401).json({ error: 'Plano não encontrado' });
 
-    const { title, duration, price } = await plan.update(req.body);
+    const { title, length, price } = await plan.update(req.body);
 
-    return res.json({ title, duration, price });
+    return res.json({ title, length, price });
   }
 
   async delete(req, res) {
@@ -59,8 +78,9 @@ class PlanController {
     if (plan.canceled_at)
       return res.status(400).json({ error: 'Este plano já foi cancelado' });
 
-    plan.canceled_at = new Date();
-
+    await plan.update({
+      canceled_at: new Date()
+    });
     // await plan.destroy();
 
     return res.json({ message: 'Plano excluído com sucesso' });

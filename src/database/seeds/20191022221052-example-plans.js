@@ -7,21 +7,21 @@ module.exports = {
       [
         {
           title: 'Start',
-          duration: 1,
+          length: 1,
           price: 129,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
           title: 'Gold',
-          duration: 3,
+          length: 3,
           price: 109,
           created_at: new Date(),
           updated_at: new Date()
         },
         {
           title: 'Diamond',
-          duration: 6,
+          length: 6,
           price: 89,
           created_at: new Date(),
           updated_at: new Date()

@@ -21,6 +21,11 @@ module.exports = {
         type: Sequelize.STRING(128),
         allowNull: false
       },
+      auth_level: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 3
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false

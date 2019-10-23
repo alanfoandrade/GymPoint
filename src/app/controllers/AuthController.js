@@ -23,15 +23,16 @@ class AuthController {
     if (!(await user.checkPassword(password)))
       return res.status(401).json({ error: 'Senha inválida' });
 
-    const { id, name } = user;
+    const { id, name, auth_level } = user;
 
     return res.json({
       user: {
         id,
         name,
-        email
+        email,
+        auth_level
       },
-      token: jwt.sign({ email }, authConfig.secret, {
+      token: jwt.sign({ auth_level }, authConfig.secret, {
         expiresIn: authConfig.expiresIn
       })
     });
