@@ -56,12 +56,12 @@ class PlanController {
 
     if (!plan) return res.status(401).json({ error: 'Plano não encontrado' });
 
-    /* if (plan.canceled_at)
-      return res.status(400).json({ error: 'Este plano não está disponível' }); */
+    if (plan.canceled_at)
+      return res.status(400).json({ error: 'Este plano já foi cancelado' });
 
-    // plan.canceled_at = new Date();
+    plan.canceled_at = new Date();
 
-    await plan.destroy();
+    // await plan.destroy();
 
     return res.json({ message: 'Plano excluído com sucesso' });
   }

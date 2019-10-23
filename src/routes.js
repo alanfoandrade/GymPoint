@@ -4,6 +4,7 @@ import AuthController from './app/controllers/AuthController';
 import authMiddleware from './app/middlewares/authMiddleware';
 import roleMiddleware from './app/middlewares/roleMiddleware';
 import PlanController from './app/controllers/PlanController';
+import EnrollmentController from './app/controllers/EnrollmentController';
 
 /**
  * Seta o email que sera comparado com o email do usuario logado
@@ -26,9 +27,15 @@ routes.post('/students', StudentController.store);
 routes.put('/students/:studentId', StudentController.update);
 
 // PlanController
-routes.get('/plans', PlanController.index);
 routes.post('/plans', PlanController.store);
+routes.get('/plans', PlanController.index);
 routes.put('/plans/:planId', PlanController.update);
 routes.delete('/plans/:planId', PlanController.delete);
+
+// EnrollmentController
+routes.post('/enrollments', EnrollmentController.store);
+routes.get('/enrollments', EnrollmentController.index);
+routes.put('/enrollments/:enrollId', EnrollmentController.update);
+routes.delete('/enrollments/:enrollId', EnrollmentController.delete);
 
 export default routes;
