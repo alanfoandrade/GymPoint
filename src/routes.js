@@ -6,6 +6,8 @@ import roleMiddleware from './app/middlewares/roleMiddleware';
 import PlanController from './app/controllers/PlanController';
 import EnrollmentController from './app/controllers/EnrollmentController';
 import CheckinController from './app/controllers/CheckinController';
+import ProviderHelpController from './app/controllers/ProviderHelpController';
+import StudentHelpController from './app/controllers/StudentHelpController';
 
 /**
  * Seta o auth_level requerido(role), que comparado com o auth_level do usuario logado
@@ -24,6 +26,10 @@ routes.post('/auth', AuthController.store);
 // CheckinController
 routes.post('/students/:studentId/checkins', CheckinController.store);
 routes.get('/students/:studentId/checkins', CheckinController.index);
+
+// StudentHelpController
+routes.post('/students/:studentId/help-orders', StudentHelpController.store);
+routes.get('/students/:studentId/help-orders', StudentHelpController.index);
 
 // Apenas usuários logados tem acesso as proximas rotas
 routes.use(authMiddleware);
@@ -46,5 +52,9 @@ routes.post('/enrollments', EnrollmentController.store);
 routes.get('/enrollments', EnrollmentController.index);
 routes.put('/enrollments/:enrollId', EnrollmentController.update);
 routes.delete('/enrollments/:enrollId', EnrollmentController.delete);
+
+// ProviderHelpController
+routes.get('/help-orders/unanswered', ProviderHelpController.index);
+routes.post('/help-orders/:orderId/answer', ProviderHelpController.store);
 
 export default routes;
