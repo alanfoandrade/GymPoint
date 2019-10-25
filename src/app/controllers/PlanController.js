@@ -5,7 +5,7 @@ class PlanController {
   async store(req, res) {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
-      length: Yup.integer().required(),
+      length: Yup.number().required(),
       price: Yup.number().required()
     });
 
@@ -14,11 +14,13 @@ class PlanController {
 
     // Verifica se já existe o mesmo tipo de plano
     const PlanExists = await Plan.findOne({
-      where: { title: req.body.title }
+      where: { title: req.body.title, canceled_at: null }
     });
 
     if (PlanExists)
-      return res.status(401).json({ error: 'Plano já cadastrado' });
+      return res
+        .status(401)
+        .json({ error: 'Existe outro plano com esse nome cadastrado' });
 
     // Cadastra plano
     const {
@@ -54,7 +56,7 @@ class PlanController {
   async update(req, res) {
     const schema = Yup.object().shape({
       title: Yup.string(),
-      length: Yup.integer(),
+      length: Yup.number(),
       price: Yup.number()
     });
 
@@ -83,7 +85,7 @@ class PlanController {
     });
     // await plan.destroy();
 
-    return res.json({ message: 'Plano excluído com sucesso' });
+    return res.json({ message: 'Plano cancelado com sucesso' });
   }
 }
 

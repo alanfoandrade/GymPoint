@@ -56,11 +56,11 @@ class EnrollmentController {
         .status(401)
         .json({ message: 'Aluno já tem matrícula ativa para essa data' });
 
-    const { id, created_at, updated_at } = await Enrollment.create({
+    const enrollment = await Enrollment.create({
       ...req.body,
-      start_date,
+      start_date: startDate,
       end_date,
-      enrollPrice
+      price: enrollPrice
     });
 
     const enrollStartDate = format(startDate, "dd 'de' MMMM 'de' yyyy", {
@@ -71,37 +71,19 @@ class EnrollmentController {
       locale: pt
     });
 
-    const studentName = isStudent.name;
-    const studentEmail = isStudent.email;
-    const planTitle = isPlan.title;
-    const planLength = isPlan.length;
-    const planPrice = isPlan.price;
-    const enrollmentId = id;
-
+    // Envia email de confirmacao de matricula
     await QueueLib.add(EnrollMail.key, {
-      studentName,
-      studentEmail,
-      planTitle,
-      planLength,
-      planPrice,
+      studentName: isStudent.name,
+      studentEmail: isStudent.email,
+      planTitle: isPlan.title,
+      planLength: isPlan.length,
+      planPrice: isPlan.price,
       enrollStartDate,
       enrollEndDate,
       enrollPrice
     });
 
-    return res.json({
-      enrollmentId,
-      studentName,
-      studentEmail,
-      planTitle,
-      planLength,
-      planPrice,
-      enrollStartDate,
-      enrollEndDate,
-      enrollPrice,
-      created_at,
-      updated_at
-    });
+    return res.json(enrollment);
   }
 
   async index(req, res) {
@@ -168,41 +150,14 @@ class EnrollmentController {
         .status(401)
         .json({ message: 'Aluno já tem matrícula ativa para essa data' });
 
-    const { created_at, updated_at } = await Enrollment.create({
+    await enrollment.update({
       ...req.body,
-      start_date,
+      start_date: startDate,
       end_date,
-      enrollPrice
+      price: enrollPrice
     });
 
-    const enrollStartDate = format(startDate, "dd 'de' MMMM 'de' yyyy", {
-      locale: pt
-    });
-
-    const enrollEndDate = format(end_date, "dd 'de' MMMM 'de' yyyy", {
-      locale: pt
-    });
-
-    const studentName = isStudent.name;
-    const studentEmail = isStudent.email;
-    const planTitle = isPlan.title;
-    const planLength = isPlan.length;
-    const planPrice = isPlan.price;
-
-    await enrollment.update(req.body);
-
-    return res.json({
-      studentName,
-      studentEmail,
-      planTitle,
-      planLength,
-      planPrice,
-      enrollStartDate,
-      enrollEndDate,
-      enrollPrice,
-      created_at,
-      updated_at
-    });
+    return res.json(enrollment);
   }
 
   async delete(req, res) {

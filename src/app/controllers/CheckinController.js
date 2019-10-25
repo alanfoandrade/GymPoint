@@ -3,7 +3,9 @@ import { Op } from 'sequelize';
 import * as Yup from 'yup';
 import Enrollment from '../models/Enrollment';
 import Student from '../models/Student';
-import Checkin from '../models/Checkin';
+import Checkin from '../schemas/Checkin';
+
+// CHECKINS ARMAZENADOS NO MONGO
 
 class CheckinController {
   async store(req, res) {
@@ -16,32 +18,26 @@ class CheckinController {
 
     const daysCheckin = 7; // Numero de dias anteriores a contar os checkin
     const checkinLimit = 5; // Limite de checkins
-    const { studentId } = req.params;
+    const student_id = req.params.studentId;
 
-    const isStudent = await Student.findByPk(studentId);
+    const isStudent = await Student.findByPk(student_id);
 
     if (!isStudent)
       return res.status(401).json({ message: 'Aluno não encontrado' });
 
     const DaysAgo = subDays(new Date(), daysCheckin);
 
-    const lastCheckins = await Checkin.findAll({
-      where: {
-        student_id: studentId,
-        created_at: {
-          [Op.between]: [DaysAgo, new Date()]
-        }
-      }
+    const lastCheckins = await Checkin.find({
+      student_id,
+      createdAt: { $gt: DaysAgo }
     });
 
-    const checkinCount = lastCheckins.length;
-
-    if (checkinCount >= checkinLimit)
+    if (lastCheckins.length >= checkinLimit)
       return res.status(401).json({ message: 'Limite de checkins atingido' });
 
     const isEnrolled = await Enrollment.findOne({
       where: {
-        student_id: studentId,
+        student_id,
         canceled_at: null,
         end_date: {
           [Op.gte]: endOfDay(new Date())
@@ -52,9 +48,7 @@ class CheckinController {
     if (!isEnrolled)
       return res.status(401).json({ message: 'Aluno não matriculado' });
 
-    const { created_at, updated_at } = await Checkin.create({
-      student_id: studentId
-    });
+    const { createdAt, updatedAt } = await Checkin.create({ student_id });
 
     const studentName = isStudent.name;
     const studentEmail = isStudent.email;
@@ -62,8 +56,8 @@ class CheckinController {
     return res.json({
       studentName,
       studentEmail,
-      created_at,
-      updated_at
+      createdAt,
+      updatedAt
     });
   }
 
@@ -75,11 +69,9 @@ class CheckinController {
     if (!(await schema.isValid(req.params)))
       return res.status(400).json({ error: 'Erro de validação' });
 
-    const { studentId } = req.params;
+    const student_id = req.params.studentId;
 
-    const checkins = await Checkin.findAll({
-      where: { student_id: studentId }
-    });
+    const checkins = await Checkin.find({ student_id });
 
     if (checkins.length === 0)
       return res.status(400).json({ error: 'Nenhum checkin encontrado' });
