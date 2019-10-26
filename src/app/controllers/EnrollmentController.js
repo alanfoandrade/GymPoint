@@ -87,7 +87,9 @@ class EnrollmentController {
   }
 
   async index(req, res) {
-    const enrollments = await Enrollment.findAll();
+    const enrollments = await Enrollment.findAll({
+      where: { canceled_at: null }
+    });
 
     if (enrollments.length === 0)
       return res.status(400).json({ error: 'Nenhuma matrícula encontrada' });
