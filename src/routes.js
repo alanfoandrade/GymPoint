@@ -56,3 +56,5 @@ routes.delete('/enrollments/:enrollId', EnrollmentController.delete);
 // ProviderHelpController
 routes.get('/help-orders/unanswered', ProviderHelpController.index);
 routes.post('/help-orders/:orderId/answer', ProviderHelpController.store);
+
+export default routes;

@@ -14,7 +14,7 @@ class EnrollMail {
       planPrice,
       enrollStartDate,
       enrollEndDate,
-      enrollPrice
+      enrollPrice,
     } = data;
 
     await MailLib.sendMail({
@@ -28,8 +28,8 @@ class EnrollMail {
         planPrice,
         enrollStartDate,
         enrollEndDate,
-        enrollPrice
-      }
+        enrollPrice,
+      },
     });
   }
 }

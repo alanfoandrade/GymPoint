@@ -13,7 +13,7 @@ class EnrollmentController {
     const schema = Yup.object().shape({
       student_id: Yup.number(),
       plan_id: Yup.number(),
-      start_date: Yup.date()
+      start_date: Yup.date(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -43,32 +43,32 @@ class EnrollmentController {
         student_id,
         canceled_at: null,
         start_date: {
-          [Op.lte]: end_date
+          [Op.lte]: end_date,
         },
         end_date: {
-          [Op.gt]: startDate
-        }
-      }
+          [Op.gt]: startDate,
+        },
+      },
     });
 
     if (isEnrolled)
       return res
         .status(401)
-        .json({ message: 'Aluno já tem matrícula ativa para essa data' });
+        .json({ message: 'Aluno já tem matrícula ativa nesse período' });
 
     const enrollment = await Enrollment.create({
       ...req.body,
       start_date: startDate,
       end_date,
-      price: enrollPrice
+      price: enrollPrice,
     });
 
     const enrollStartDate = format(startDate, "dd 'de' MMMM 'de' yyyy", {
-      locale: pt
+      locale: pt,
     });
 
     const enrollEndDate = format(end_date, "dd 'de' MMMM 'de' yyyy", {
-      locale: pt
+      locale: pt,
     });
 
     // Envia email de confirmacao de matricula
@@ -80,7 +80,7 @@ class EnrollmentController {
       planPrice: isPlan.price,
       enrollStartDate,
       enrollEndDate,
-      enrollPrice
+      enrollPrice,
     });
 
     return res.json(enrollment);
@@ -88,7 +88,7 @@ class EnrollmentController {
 
   async index(req, res) {
     const enrollments = await Enrollment.findAll({
-      where: { canceled_at: null }
+      where: { canceled_at: null },
     });
 
     if (enrollments.length === 0)
@@ -101,7 +101,7 @@ class EnrollmentController {
     const schema = Yup.object().shape({
       student_id: Yup.number().required(),
       plan_id: Yup.number().required(),
-      start_date: Yup.date().required()
+      start_date: Yup.date().required(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -134,17 +134,17 @@ class EnrollmentController {
     const isEnrolled = await Enrollment.findOne({
       where: {
         id: {
-          [Op.ne]: req.params.enrollId
+          [Op.ne]: req.params.enrollId,
         },
         student_id,
         canceled_at: null,
         start_date: {
-          [Op.lte]: end_date
+          [Op.lte]: end_date,
         },
         end_date: {
-          [Op.gt]: startDate
-        }
-      }
+          [Op.gt]: startDate,
+        },
+      },
     });
 
     if (isEnrolled)
@@ -156,7 +156,7 @@ class EnrollmentController {
       ...req.body,
       start_date: startDate,
       end_date,
-      price: enrollPrice
+      price: enrollPrice,
     });
 
     return res.json(enrollment);
@@ -172,7 +172,7 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Esta matrícula já foi cancelada' });
 
     await enrollment.update({
-      canceled_at: new Date()
+      canceled_at: new Date(),
     });
 
     // await enrollment.destroy();

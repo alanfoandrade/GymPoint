@@ -7,7 +7,7 @@ import QueueLib from '../../lib/QueueLib';
 class ProviderHelpController {
   async index(req, res) {
     const helporders = await Helporder.findAll({
-      where: { answer_at: null }
+      where: { answer_at: null },
     });
 
     if (helporders.length === 0)
@@ -20,7 +20,7 @@ class ProviderHelpController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      answer: Yup.string().required()
+      answer: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -31,9 +31,9 @@ class ProviderHelpController {
         {
           model: Student,
           as: 'student',
-          attributes: ['name', 'email']
-        }
-      ]
+          attributes: ['name', 'email'],
+        },
+      ],
     });
 
     if (!helporder)
@@ -50,7 +50,7 @@ class ProviderHelpController {
       studentName: helporder.student.name,
       studentEmail: helporder.student.email,
       question: helporder.question,
-      answer: helporder.answer
+      answer: helporder.answer,
     });
 
     return res.json(helporder);

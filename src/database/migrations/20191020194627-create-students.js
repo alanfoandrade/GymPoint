@@ -7,41 +7,41 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       name: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: false,
       },
       email: {
         type: Sequelize.STRING(100),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       age: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
       weight: {
         type: Sequelize.FLOAT,
-        allowNull: false
+        allowNull: false,
       },
       height: {
         type: Sequelize.FLOAT,
-        allowNull: false
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   },
 
   down: queryInterface => {
     return queryInterface.dropTable('students');
-  }
+  },
 };

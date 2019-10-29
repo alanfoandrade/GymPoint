@@ -15,8 +15,8 @@ class AnswerHelpMail {
       context: {
         studentName,
         question,
-        answer
-      }
+        answer,
+      },
     });
   }
 }

@@ -13,7 +13,7 @@ module.exports = {
           password_hash: bcrypt.hashSync('123456', 8),
           auth_level: 0,
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         },
         {
           name: 'Atendente',
@@ -21,12 +21,12 @@ module.exports = {
           password_hash: bcrypt.hashSync('123456', 8),
           auth_level: 1,
           created_at: new Date(),
-          updated_at: new Date()
-        }
+          updated_at: new Date(),
+        },
       ],
       {}
     );
   },
 
-  down: () => {}
+  down: () => {},
 };

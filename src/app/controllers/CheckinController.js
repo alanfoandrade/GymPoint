@@ -1,4 +1,4 @@
-import { subDays, endOfDay, startOfDay } from 'date-fns';
+import { subDays, endOfDay } from 'date-fns';
 import { Op } from 'sequelize';
 import * as Yup from 'yup';
 import Enrollment from '../models/Enrollment';
@@ -10,7 +10,7 @@ import Checkin from '../schemas/Checkin';
 class CheckinController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      studentId: Yup.number()
+      studentId: Yup.number(),
     });
 
     if (!(await schema.isValid(req.params)))
@@ -29,7 +29,7 @@ class CheckinController {
 
     const lastCheckins = await Checkin.find({
       student_id,
-      createdAt: { $gt: DaysAgo }
+      createdAt: { $gt: DaysAgo },
     });
 
     if (lastCheckins.length >= checkinLimit)
@@ -40,9 +40,9 @@ class CheckinController {
         student_id,
         canceled_at: null,
         end_date: {
-          [Op.gte]: endOfDay(new Date())
-        }
-      }
+          [Op.gte]: endOfDay(new Date()),
+        },
+      },
     });
 
     if (!isEnrolled)
@@ -57,13 +57,13 @@ class CheckinController {
       studentName,
       studentEmail,
       createdAt,
-      updatedAt
+      updatedAt,
     });
   }
 
   async index(req, res) {
     const schema = Yup.object().shape({
-      studentId: Yup.number()
+      studentId: Yup.number(),
     });
 
     if (!(await schema.isValid(req.params)))

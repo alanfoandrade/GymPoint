@@ -7,41 +7,41 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       student_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: { model: 'students', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        onDelete: 'SET NULL',
       },
       question: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       answer: {
         type: Sequelize.STRING,
         allowNull: true,
-        defaultValue: null
+        defaultValue: null,
       },
       answer_at: {
         type: Sequelize.DATE,
         allowNull: true,
-        defaultValue: null
+        defaultValue: null,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   },
 
   down: queryInterface => {
     return queryInterface.dropTable('helporders');
-  }
+  },
 };

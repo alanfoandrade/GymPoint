@@ -4,11 +4,11 @@ export default role => {
     authorization(req, res, next) {
       if (role !== req.auth_level)
         return res.status(403).json({
-          message: 'Acesso não autorizado'
+          message: 'Acesso não autorizado',
         });
 
       return next();
-    }
+    },
   };
   return module;
 };

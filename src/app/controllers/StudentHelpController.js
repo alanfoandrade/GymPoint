@@ -5,7 +5,7 @@ import Student from '../models/Student';
 class StudentHelpController {
   async index(req, res) {
     const helporders = await Helporder.findAll({
-      where: { student_id: req.params.studentId }
+      where: { student_id: req.params.studentId },
     });
 
     if (helporders.length === 0)
@@ -18,7 +18,7 @@ class StudentHelpController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      question: Yup.string().required()
+      question: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -31,7 +31,7 @@ class StudentHelpController {
 
     const helporder = await Helporder.create({
       ...req.body,
-      student_id: req.params.studentId
+      student_id: req.params.studentId,
     });
 
     return res.json(helporder);

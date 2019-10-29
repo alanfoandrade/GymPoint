@@ -7,30 +7,30 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       title: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: false,
       },
       length: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
       price: Sequelize.FLOAT,
       canceled_at: Sequelize.DATE,
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   },
 
   down: queryInterface => {
     return queryInterface.dropTable('plans');
-  }
+  },
 };

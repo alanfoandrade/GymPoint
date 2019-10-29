@@ -7,7 +7,7 @@ class Plan extends Model {
         title: Sequelize.STRING,
         length: Sequelize.INTEGER,
         price: Sequelize.FLOAT,
-        canceled_at: Sequelize.DATE
+        canceled_at: Sequelize.DATE,
       },
       { sequelize }
     );

@@ -9,7 +9,7 @@ class AuthController {
       email: Yup.string()
         .email()
         .required(),
-      password: Yup.string().required()
+      password: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -30,11 +30,11 @@ class AuthController {
         id,
         name,
         email,
-        auth_level
+        auth_level,
       },
       token: jwt.sign({ auth_level }, authConfig.secret, {
-        expiresIn: authConfig.expiresIn
-      })
+        expiresIn: authConfig.expiresIn,
+      }),
     });
   }
 }

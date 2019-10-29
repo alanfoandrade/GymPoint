@@ -15,8 +15,8 @@ class Enrollment extends Model {
           type: Sequelize.VIRTUAL,
           get() {
             return isBefore(this.end_date, new Date());
-          }
-        }
+          },
+        },
       },
       { sequelize }
     );

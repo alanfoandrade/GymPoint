@@ -10,7 +10,7 @@ class StudentController {
         .required(),
       age: Yup.number().required(),
       weight: Yup.number().required(),
-      height: Yup.number().required()
+      height: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -18,7 +18,7 @@ class StudentController {
 
     // Verifica se email já está cadastrado
     const emailExists = await Student.findOne({
-      where: { email: req.body.email }
+      where: { email: req.body.email },
     });
 
     if (emailExists)
@@ -38,7 +38,7 @@ class StudentController {
       email: Yup.string().email(),
       age: Yup.number(),
       weight: Yup.number(),
-      height: Yup.number()
+      height: Yup.number(),
     });
 
     if (!(await schema.isValid(req.body)))
@@ -53,7 +53,7 @@ class StudentController {
     if (req.body.email !== student.email) {
       // Verifica se o novo email já está cadastrado
       const emailExists = await Student.findOne({
-        where: { email: req.body.email }
+        where: { email: req.body.email },
       });
 
       if (emailExists)
