@@ -1,4 +1,4 @@
-import { subDays, endOfDay } from 'date-fns';
+import { subDays, endOfDay, startOfDay } from 'date-fns';
 import { Op } from 'sequelize';
 import * as Yup from 'yup';
 import Enrollment from '../models/Enrollment';
@@ -16,8 +16,6 @@ class CheckinController {
     if (!(await schema.isValid(req.params)))
       return res.status(400).json({ error: 'Erro de validação' });
 
-    const daysCheckin = 7; // Numero de dias anteriores a contar os checkin
-    const checkinLimit = 5; // Limite de checkins
     const student_id = req.params.studentId;
 
     const isStudent = await Student.findByPk(student_id);
@@ -25,20 +23,13 @@ class CheckinController {
     if (!isStudent)
       return res.status(401).json({ message: 'Aluno não encontrado' });
 
-    const DaysAgo = subDays(new Date(), daysCheckin);
-
-    const lastCheckins = await Checkin.find({
-      student_id,
-      createdAt: { $gt: DaysAgo },
-    });
-
-    if (lastCheckins.length >= checkinLimit)
-      return res.status(401).json({ message: 'Limite de checkins atingido' });
-
     const isEnrolled = await Enrollment.findOne({
       where: {
         student_id,
         canceled_at: null,
+        start_date: {
+          [Op.lte]: startOfDay(new Date()),
+        },
         end_date: {
           [Op.gte]: endOfDay(new Date()),
         },
@@ -48,16 +39,27 @@ class CheckinController {
     if (!isEnrolled)
       return res.status(401).json({ message: 'Aluno não matriculado' });
 
-    const { createdAt, updatedAt } = await Checkin.create({ student_id });
+    const daysCheckin = 7; // Numero de dias anteriores a contar os checkin
+    const checkinLimit = 5; // Limite de checkins
+
+    const lastCheckins = await Checkin.countDocuments({
+      student_id,
+      createdAt: { $gt: endOfDay(subDays(new Date(), daysCheckin)) },
+    });
+
+    if (lastCheckins >= checkinLimit)
+      return res.status(401).json({ message: 'Limite de checkins atingido' });
+
+    const { createdAt } = await Checkin.create({ student_id });
 
     const studentName = isStudent.name;
     const studentEmail = isStudent.email;
 
     return res.json({
+      student_id,
       studentName,
       studentEmail,
       createdAt,
-      updatedAt,
     });
   }
 
