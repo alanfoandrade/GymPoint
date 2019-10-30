@@ -33,7 +33,9 @@ class EnrollmentController {
     if (!isStudent)
       return res.status(401).json({ message: 'Aluno não encontrado' });
 
-    const isPlan = await Plan.findByPk(plan_id);
+    const isPlan = await Plan.findOne({
+      where: { id: plan_id, canceled_at: null },
+    });
 
     if (!isPlan)
       return res.status(401).json({ message: 'Plano não encontrado' });
