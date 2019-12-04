@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Student from '../models/Student';
 
 class StudentController {
@@ -30,6 +31,37 @@ class StudentController {
     );
 
     return res.json({ id, name, email, age, weight, height });
+  }
+
+  async index(req, res) {
+    const schema = Yup.object().shape({
+      q: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.query)))
+      return res.status(400).json({ error: 'Erro de validação' });
+
+    const { page = 1, q } = req.query;
+
+    if (!q) {
+      const users = await Student.findAll({
+        order: ['name'],
+        limit: 20,
+        offset: (page - 1) * 20,
+      });
+
+      return res.json(users);
+    }
+    const user = await Student.findAll({
+      where: { name: { [Op.iLike]: `%${q}%` } },
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
+
+    if (user === null)
+      return res.status(400).json({ error: 'Aluno não encontrado' });
+
+    return res.json(user);
   }
 
   async update(req, res) {

@@ -98,6 +98,20 @@ class EnrollmentController {
   async index(req, res) {
     const enrollments = await Enrollment.findAll({
       where: { canceled_at: null },
+      attributes: ['id', 'start_date', 'end_date', 'active'],
+      order: ['end_date'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['title'],
+        },
+      ],
     });
 
     if (enrollments.length === 0)

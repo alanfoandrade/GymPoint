@@ -4,8 +4,12 @@ import Student from '../models/Student';
 
 class StudentHelpController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const helporders = await Helporder.findAll({
       where: { student_id: req.params.studentId },
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     if (helporders.length === 0)

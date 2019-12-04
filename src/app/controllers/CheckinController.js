@@ -64,6 +64,8 @@ class CheckinController {
   }
 
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const schema = Yup.object().shape({
       studentId: Yup.number(),
     });
@@ -73,7 +75,11 @@ class CheckinController {
 
     const student_id = req.params.studentId;
 
-    const checkins = await Checkin.find({ student_id });
+    const checkins = await Checkin.find({
+      student_id,
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
 
     if (checkins.length === 0)
       return res.status(400).json({ error: 'Nenhum checkin encontrado' });

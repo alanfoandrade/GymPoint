@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+
 import Helporder from '../models/Helporder';
 import Student from '../models/Student';
 import AnswerHelpMail from '../jobs/AnswerHelpMail';
@@ -6,8 +7,20 @@ import QueueLib from '../../lib/QueueLib';
 
 class ProviderHelpController {
   async index(req, res) {
+    const { page = 1 } = req.query;
+
     const helporders = await Helporder.findAll({
       where: { answer_at: null },
+      attributes: ['id', 'question'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name'],
+        },
+      ],
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     if (helporders.length === 0)

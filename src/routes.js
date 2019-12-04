@@ -39,6 +39,7 @@ routes.use(roleAdmin.authorization);
 
 // StudentController
 routes.post('/students', StudentController.store);
+routes.get('/students', StudentController.index);
 routes.put('/students/:studentId', StudentController.update);
 
 // PlanController
