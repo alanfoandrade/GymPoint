@@ -41,6 +41,7 @@ routes.use(roleAdmin.authorization);
 routes.post('/students', StudentController.store);
 routes.get('/students', StudentController.index);
 routes.put('/students/:studentId', StudentController.update);
+routes.delete('/students/:studentId', StudentController.delete);
 
 // PlanController
 routes.post('/plans', PlanController.store);

@@ -9,6 +9,7 @@ class Student extends Model {
         age: Sequelize.INTEGER,
         weight: Sequelize.FLOAT,
         height: Sequelize.FLOAT,
+        deleted_at: Sequelize.DATE,
       },
       { sequelize }
     );

@@ -15,7 +15,6 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING(100),
-        allowNull: false,
         unique: true,
       },
       age: {
@@ -29,6 +28,10 @@ module.exports = {
       height: {
         type: Sequelize.FLOAT,
         allowNull: false,
+      },
+      deleted_at: {
+        type: Sequelize.DATE,
+        defaultValue: null,
       },
       created_at: {
         type: Sequelize.DATE,

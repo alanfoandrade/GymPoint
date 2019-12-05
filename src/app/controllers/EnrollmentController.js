@@ -114,8 +114,7 @@ class EnrollmentController {
       ],
     });
 
-    if (enrollments.length === 0)
-      return res.status(400).json({ error: 'Nenhuma matrícula encontrada' });
+    if (enrollments.length === 0) return res.status(204);
 
     return res.json(enrollments);
   }

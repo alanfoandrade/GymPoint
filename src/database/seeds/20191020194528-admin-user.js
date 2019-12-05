@@ -23,6 +23,14 @@ module.exports = {
           created_at: new Date(),
           updated_at: new Date(),
         },
+        {
+          name: 'Teste',
+          email: 'teste@gympoint.com',
+          password_hash: bcrypt.hashSync('123456', 8),
+          auth_level: 2,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
       ],
       {}
     );

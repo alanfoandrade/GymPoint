@@ -20,6 +20,10 @@ class AuthController {
 
     if (!user) return res.status(401).json({ error: 'Usuário não encontrado' });
 
+    if (user.auth_level !== 0 && user.auth_level !== 1) {
+      return res.status(403).json({ error: 'Não é funcionário' });
+    }
+
     if (!(await user.checkPassword(password)))
       return res.status(401).json({ error: 'Senha inválida' });
 

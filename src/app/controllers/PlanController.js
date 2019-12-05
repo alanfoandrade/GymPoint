@@ -14,12 +14,15 @@ class PlanController {
 
     // Verifica se já existe o mesmo tipo de plano
     const PlanExists = await Plan.findOne({
-      where: { title: req.body.title, canceled_at: null },
+      where: {
+        title: req.body.title,
+        canceled_at: null,
+      },
     });
 
     if (PlanExists)
       return res
-        .status(401)
+        .status(400)
         .json({ error: 'Existe outro plano com esse nome cadastrado' });
 
     // Cadastra plano
@@ -47,8 +50,7 @@ class PlanController {
       offset: (page - 1) * 20,
     });
 
-    if (plans.length === 0)
-      return res.status(400).json({ error: 'Nenhum plano encontrado' });
+    if (plans.length === 0) return res.status(204);
 
     return res.json(plans);
   }
@@ -66,6 +68,18 @@ class PlanController {
     const plan = await Plan.findByPk(req.params.planId);
 
     if (!plan) return res.status(401).json({ error: 'Plano não encontrado' });
+
+    if (req.body.title !== plan.title) {
+      // Verifica se o novo email já está cadastrado
+      const titleExists = await Plan.findOne({
+        where: { title: req.body.title },
+      });
+
+      if (titleExists)
+        return res
+          .status(400)
+          .json({ error: 'Existe outro plano com esse nome cadastrado' });
+    }
 
     const { title, length, price } = await plan.update(req.body);
 

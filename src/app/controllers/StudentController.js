@@ -45,20 +45,28 @@ class StudentController {
 
     if (!q) {
       const users = await Student.findAll({
+        where: {
+          deleted_at: null,
+        },
         order: ['name'],
         limit: 20,
         offset: (page - 1) * 20,
       });
 
+      if (users.length === 0) return res.status(204);
+
       return res.json(users);
     }
     const user = await Student.findAll({
-      where: { name: { [Op.iLike]: `%${q}%` } },
+      where: {
+        name: { [Op.iLike]: `%${q}%` },
+        deleted_at: null,
+      },
       limit: 20,
       offset: (page - 1) * 20,
     });
 
-    if (user === null)
+    if (user.length === 0)
       return res.status(400).json({ error: 'Aluno não encontrado' });
 
     return res.json(user);
@@ -97,6 +105,23 @@ class StudentController {
     );
 
     return res.json({ id, name, email, age, weight, height });
+  }
+
+  async delete(req, res) {
+    const student = await Student.findByPk(req.params.studentId);
+
+    if (!student)
+      return res.status(401).json({ error: 'Aluno não encontrado' });
+
+    if (student.deleted_at)
+      return res.status(400).json({ error: 'Este aluno já foi excluído' });
+
+    await student.update({
+      deleted_at: new Date(),
+      email: null,
+    });
+
+    return res.json({ message: 'Aluno excluído com sucesso' });
   }
 }
 

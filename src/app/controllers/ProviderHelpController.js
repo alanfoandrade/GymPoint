@@ -23,10 +23,7 @@ class ProviderHelpController {
       offset: (page - 1) * 20,
     });
 
-    if (helporders.length === 0)
-      return res
-        .status(400)
-        .json({ error: 'Nenhum pedido de ajuda sem resposta' });
+    if (helporders.length === 0) return res.status(204);
 
     return res.json(helporders);
   }
