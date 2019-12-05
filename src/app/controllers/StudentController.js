@@ -100,11 +100,9 @@ class StudentController {
         return res.status(401).json({ error: 'Email já cadastrado' });
     }
 
-    const { id, name, email, age, weight, height } = await student.update(
-      req.body
-    );
+    const response = await student.update(req.body);
 
-    return res.json({ id, name, email, age, weight, height });
+    return res.json(response);
   }
 
   async delete(req, res) {
