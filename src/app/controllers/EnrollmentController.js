@@ -92,7 +92,7 @@ class EnrollmentController {
     });
 
     const enrollment = await Enrollment.findByPk(id, {
-      attributes: ['id', 'active', 'start_date', 'end_date'],
+      attributes: ['id', 'active', 'start_date', 'end_date', 'price'],
       include: [
         {
           model: Student,
@@ -102,7 +102,7 @@ class EnrollmentController {
         {
           model: Plan,
           as: 'plan',
-          attributes: ['id', 'title'],
+          attributes: ['id', 'title', 'length', 'price'],
         },
       ],
     });
@@ -113,7 +113,7 @@ class EnrollmentController {
   async index(req, res) {
     const enrollments = await Enrollment.findAll({
       where: { canceled_at: null },
-      attributes: ['id', 'active', 'start_date', 'end_date'],
+      attributes: ['id', 'active', 'start_date', 'end_date', 'price'],
       order: ['end_date'],
       include: [
         {
@@ -124,7 +124,7 @@ class EnrollmentController {
         {
           model: Plan,
           as: 'plan',
-          attributes: ['id', 'title'],
+          attributes: ['id', 'title', 'length', 'price'],
         },
       ],
     });
@@ -145,7 +145,7 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Erro de validação' });
 
     const enrollment = await Enrollment.findByPk(req.params.enrollId, {
-      attributes: ['id', 'active', 'start_date', 'end_date'],
+      attributes: ['id', 'active', 'start_date', 'end_date', 'price'],
       include: [
         {
           model: Student,
@@ -155,7 +155,7 @@ class EnrollmentController {
         {
           model: Plan,
           as: 'plan',
-          attributes: ['id', 'title'],
+          attributes: ['id', 'title', 'length', 'price'],
         },
       ],
     });
