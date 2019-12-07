@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { Op } from 'sequelize';
 import Plan from '../models/Plan';
 
 class PlanController {

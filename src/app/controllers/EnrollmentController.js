@@ -174,11 +174,11 @@ class EnrollmentController {
 
     if (!isPlan) return res.status(401).json({ error: 'Plano não encontrado' });
 
-    const startDate = endOfDay(parseISO(start_date));
-    const end_date = addMonths(startDate, isPlan.length);
+    const startDate = startOfDay(parseISO(start_date));
+    const end_date = endOfDay(addMonths(startDate, isPlan.length));
     const enrollPrice = isPlan.price * isPlan.length;
 
-    if (isBefore(startDate, new Date()))
+    if (isBefore(startDate, startOfDay(new Date())))
       return res.status(400).json({ error: 'Data já passou' });
 
     const isEnrolled = await Enrollment.findOne({
