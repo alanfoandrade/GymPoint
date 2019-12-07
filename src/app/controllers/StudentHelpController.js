@@ -31,7 +31,7 @@ class StudentHelpController {
     const isStudent = await Student.findByPk(req.params.studentId);
 
     if (!isStudent)
-      return res.status(401).json({ message: 'Aluno não encontrado' });
+      return res.status(401).json({ error: 'Aluno não encontrado' });
 
     const helporder = await Helporder.create({
       ...req.body,

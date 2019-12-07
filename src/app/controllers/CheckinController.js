@@ -21,7 +21,7 @@ class CheckinController {
     const isStudent = await Student.findByPk(student_id);
 
     if (!isStudent)
-      return res.status(401).json({ message: 'Aluno não encontrado' });
+      return res.status(401).json({ error: 'Aluno não encontrado' });
 
     const isEnrolled = await Enrollment.findOne({
       where: {
@@ -37,7 +37,7 @@ class CheckinController {
     });
 
     if (!isEnrolled)
-      return res.status(401).json({ message: 'Aluno não matriculado' });
+      return res.status(401).json({ error: 'Aluno não matriculado' });
 
     const daysCheckin = 7; // Numero de dias anteriores a contar os checkin
     const checkinLimit = 5; // Limite de checkins
@@ -48,7 +48,7 @@ class CheckinController {
     });
 
     if (lastCheckins >= checkinLimit)
-      return res.status(401).json({ message: 'Limite de checkins atingido' });
+      return res.status(401).json({ error: 'Limite de checkins atingido' });
 
     const { createdAt } = await Checkin.create({ student_id });
 

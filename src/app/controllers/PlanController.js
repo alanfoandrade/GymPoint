@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Plan from '../models/Plan';
 
 class PlanController {
@@ -70,12 +71,15 @@ class PlanController {
     if (!plan) return res.status(401).json({ error: 'Plano não encontrado' });
 
     if (req.body.title !== plan.title) {
-      // Verifica se o novo email já está cadastrado
-      const titleExists = await Plan.findOne({
-        where: { title: req.body.title },
+      // Verifica se já existe o mesmo tipo de plano
+      const PlanExists = await Plan.findOne({
+        where: {
+          title: req.body.title,
+          canceled_at: null,
+        },
       });
 
-      if (titleExists)
+      if (PlanExists)
         return res
           .status(400)
           .json({ error: 'Existe outro plano com esse nome cadastrado' });

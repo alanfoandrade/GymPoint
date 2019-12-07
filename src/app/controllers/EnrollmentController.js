@@ -31,14 +31,13 @@ class EnrollmentController {
     const isStudent = await Student.findByPk(student_id);
 
     if (!isStudent)
-      return res.status(401).json({ message: 'Aluno não encontrado' });
+      return res.status(401).json({ error: 'Aluno não encontrado' });
 
     const isPlan = await Plan.findOne({
       where: { id: plan_id, canceled_at: null },
     });
 
-    if (!isPlan)
-      return res.status(401).json({ message: 'Plano não encontrado' });
+    if (!isPlan) return res.status(401).json({ error: 'Plano não encontrado' });
 
     const startDate = startOfDay(parseISO(start_date));
     const end_date = endOfDay(addMonths(startDate, isPlan.length));
@@ -63,9 +62,9 @@ class EnrollmentController {
     if (isEnrolled)
       return res
         .status(401)
-        .json({ message: 'Aluno já tem matrícula ativa nesse período' });
+        .json({ error: 'Aluno já tem matrícula ativa nesse período' });
 
-    const enrollment = await Enrollment.create({
+    const { id } = await Enrollment.create({
       ...req.body,
       start_date: startDate,
       end_date,
@@ -92,24 +91,40 @@ class EnrollmentController {
       enrollPrice,
     });
 
+    const enrollment = await Enrollment.findByPk(id, {
+      attributes: ['id', 'active', 'start_date', 'end_date'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title'],
+        },
+      ],
+    });
+
     return res.json(enrollment);
   }
 
   async index(req, res) {
     const enrollments = await Enrollment.findAll({
       where: { canceled_at: null },
-      attributes: ['id', 'start_date', 'end_date', 'active'],
+      attributes: ['id', 'active', 'start_date', 'end_date'],
       order: ['end_date'],
       include: [
         {
           model: Student,
           as: 'student',
-          attributes: ['name'],
+          attributes: ['id', 'name'],
         },
         {
           model: Plan,
           as: 'plan',
-          attributes: ['title'],
+          attributes: ['id', 'title'],
         },
       ],
     });
@@ -129,7 +144,21 @@ class EnrollmentController {
     if (!(await schema.isValid(req.body)))
       return res.status(400).json({ error: 'Erro de validação' });
 
-    const enrollment = await Enrollment.findByPk(req.params.enrollId);
+    const enrollment = await Enrollment.findByPk(req.params.enrollId, {
+      attributes: ['id', 'active', 'start_date', 'end_date'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title'],
+        },
+      ],
+    });
 
     if (!enrollment)
       return res.status(401).json({ error: 'Matrícula não encontrada' });
@@ -139,12 +168,11 @@ class EnrollmentController {
     const isStudent = await Student.findByPk(student_id);
 
     if (!isStudent)
-      return res.status(401).json({ message: 'Aluno não encontrado' });
+      return res.status(401).json({ error: 'Aluno não encontrado' });
 
     const isPlan = await Plan.findByPk(plan_id);
 
-    if (!isPlan)
-      return res.status(401).json({ message: 'Plano não encontrado' });
+    if (!isPlan) return res.status(401).json({ error: 'Plano não encontrado' });
 
     const startDate = endOfDay(parseISO(start_date));
     const end_date = addMonths(startDate, isPlan.length);
@@ -172,7 +200,7 @@ class EnrollmentController {
     if (isEnrolled)
       return res
         .status(401)
-        .json({ message: 'Aluno já tem matrícula ativa para essa data' });
+        .json({ error: 'Aluno já tem matrícula ativa para essa data' });
 
     await enrollment.update({
       ...req.body,
