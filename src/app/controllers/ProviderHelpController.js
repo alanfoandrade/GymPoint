@@ -6,28 +6,6 @@ import AnswerHelpMail from '../jobs/AnswerHelpMail';
 import QueueLib from '../../lib/QueueLib';
 
 class ProviderHelpController {
-  async index(req, res) {
-    const { page = 1 } = req.query;
-
-    const helporders = await Helporder.findAll({
-      where: { answer_at: null },
-      attributes: ['id', 'question'],
-      include: [
-        {
-          model: Student,
-          as: 'student',
-          attributes: ['name'],
-        },
-      ],
-      limit: 20,
-      offset: (page - 1) * 20,
-    });
-
-    if (helporders.length === 0) return res.status(204);
-
-    return res.json(helporders);
-  }
-
   async store(req, res) {
     const schema = Yup.object().shape({
       answer: Yup.string().required(),
@@ -64,6 +42,26 @@ class ProviderHelpController {
     });
 
     return res.json(helporder);
+  }
+
+  async index(req, res) {
+    const { p = 1 } = req.query;
+
+    const helporders = await Helporder.findAll({
+      where: { answer_at: null },
+      attributes: ['id', 'question'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name'],
+        },
+      ],
+      limit: 20,
+      offset: (p - 1) * 20,
+    });
+
+    return res.json(helporders);
   }
 }
 

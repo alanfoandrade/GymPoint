@@ -3,23 +3,6 @@ import Helporder from '../models/Helporder';
 import Student from '../models/Student';
 
 class StudentHelpController {
-  async index(req, res) {
-    const { page = 1 } = req.query;
-
-    const helporders = await Helporder.findAll({
-      where: { student_id: req.params.studentId },
-      limit: 20,
-      offset: (page - 1) * 20,
-    });
-
-    if (helporders.length === 0)
-      return res
-        .status(400)
-        .json({ error: 'Nenhum pedido de ajuda cadastrado para esse aluno' });
-
-    return res.json(helporders);
-  }
-
   async store(req, res) {
     const schema = Yup.object().shape({
       question: Yup.string().required(),
@@ -39,6 +22,18 @@ class StudentHelpController {
     });
 
     return res.json(helporder);
+  }
+
+  async index(req, res) {
+    const { page = 1 } = req.query;
+
+    const helporders = await Helporder.findAll({
+      where: { student_id: req.params.studentId },
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
+
+    return res.json(helporders);
   }
 }
 

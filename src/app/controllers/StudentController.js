@@ -41,33 +41,17 @@ class StudentController {
     if (!(await schema.isValid(req.query)))
       return res.status(400).json({ error: 'Erro de validação' });
 
-    const { page = 1, q } = req.query;
+    const { p = 1, q = null } = req.query;
 
-    if (!q) {
-      const users = await Student.findAll({
-        where: {
-          deleted_at: null,
-        },
-        order: ['name'],
-        limit: 20,
-        offset: (page - 1) * 20,
-      });
-
-      if (users.length === 0) return res.status(204);
-
-      return res.json(users);
-    }
     const user = await Student.findAll({
       where: {
-        name: { [Op.iLike]: `%${q}%` },
+        name: { [Op.iLike]: `%${q || ''}%` },
         deleted_at: null,
       },
+      order: ['name'],
       limit: 20,
-      offset: (page - 1) * 20,
+      offset: (p - 1) * 20,
     });
-
-    if (user.length === 0)
-      return res.status(400).json({ error: 'Aluno não encontrado' });
 
     return res.json(user);
   }

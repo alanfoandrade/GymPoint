@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Plan from '../models/Plan';
 
 class PlanController {
@@ -39,18 +40,17 @@ class PlanController {
   }
 
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const { p = 1, q = null } = req.query;
     const plans = await Plan.findAll({
       where: {
+        title: { [Op.iLike]: `%${q || ''}%` },
         canceled_at: null,
       },
       order: ['length'],
       attributes: ['id', 'title', 'length', 'price'],
       limit: 20,
-      offset: (page - 1) * 20,
+      offset: (p - 1) * 20,
     });
-
-    if (plans.length === 0) return res.status(204);
 
     return res.json(plans);
   }

@@ -5,6 +5,7 @@ import {
   isBefore,
   addMonths,
   format,
+  getUnixTime,
 } from 'date-fns';
 import { Op } from 'sequelize';
 import pt from 'date-fns/locale/pt';
@@ -111,8 +112,12 @@ class EnrollmentController {
   }
 
   async index(req, res) {
+    const { p = 1 } = req.query;
+
     const enrollments = await Enrollment.findAll({
-      where: { canceled_at: null },
+      where: {
+        canceled_at: null,
+      },
       attributes: ['id', 'active', 'start_date', 'end_date', 'price'],
       order: ['end_date'],
       include: [
@@ -127,9 +132,9 @@ class EnrollmentController {
           attributes: ['id', 'title', 'length', 'price'],
         },
       ],
+      limit: 20,
+      offset: (p - 1) * 20,
     });
-
-    if (enrollments.length === 0) return res.status(204);
 
     return res.json(enrollments);
   }
@@ -178,8 +183,12 @@ class EnrollmentController {
     const end_date = endOfDay(addMonths(startDate, isPlan.length));
     const enrollPrice = isPlan.price * isPlan.length;
 
-    if (isBefore(startDate, startOfDay(new Date())))
-      return res.status(400).json({ error: 'Data já passou' });
+    if (
+      getUnixTime(parseISO(start_date)) !== getUnixTime(enrollment.start_date)
+    ) {
+      if (isBefore(startDate, startOfDay(new Date())))
+        return res.status(400).json({ error: 'Data já passou' });
+    }
 
     const isEnrolled = await Enrollment.findOne({
       where: {

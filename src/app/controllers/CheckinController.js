@@ -81,9 +81,6 @@ class CheckinController {
       offset: (page - 1) * 20,
     });
 
-    if (checkins.length === 0)
-      return res.status(400).json({ error: 'Nenhum checkin encontrado' });
-
     return res.json(checkins);
   }
 }
