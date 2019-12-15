@@ -29,6 +29,7 @@ class StudentHelpController {
 
     const helporders = await Helporder.findAll({
       where: { student_id: req.params.studentId },
+      order: [['createdAt', 'DESC']],
       limit: 20,
       offset: (page - 1) * 20,
     });

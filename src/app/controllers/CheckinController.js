@@ -64,8 +64,6 @@ class CheckinController {
   }
 
   async index(req, res) {
-    const { page = 1 } = req.query;
-
     const schema = Yup.object().shape({
       studentId: Yup.number(),
     });
@@ -73,13 +71,13 @@ class CheckinController {
     if (!(await schema.isValid(req.params)))
       return res.status(400).json({ error: 'Erro de validação' });
 
+    const daysCheckin = 7; // Numero de dias anteriores a contar os checkin
     const student_id = req.params.studentId;
 
     const checkins = await Checkin.find({
       student_id,
-      limit: 20,
-      offset: (page - 1) * 20,
-    });
+      createdAt: { $gt: endOfDay(subDays(new Date(), daysCheckin)) },
+    }).sort({ createdAt: 'asc' });
 
     return res.json(checkins);
   }

@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import StudentController from './app/controllers/StudentController';
-import AuthController from './app/controllers/AuthController';
+
 import authMiddleware from './app/middlewares/authMiddleware';
 import roleMiddleware from './app/middlewares/roleMiddleware';
+import AuthController from './app/controllers/AuthController';
+import StudentController from './app/controllers/StudentController';
 import PlanController from './app/controllers/PlanController';
 import EnrollmentController from './app/controllers/EnrollmentController';
 import CheckinController from './app/controllers/CheckinController';
@@ -21,6 +22,7 @@ const roleStudent = roleMiddleware(3);
  */
 const routes = new Router();
 
+routes.post('/auth/student', StudentController.show);
 routes.post('/auth', AuthController.store);
 
 // CheckinController

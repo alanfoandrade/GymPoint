@@ -50,6 +50,7 @@ class ProviderHelpController {
     const helporders = await Helporder.findAll({
       where: { answer_at: null },
       attributes: ['id', 'question'],
+      order: [['createdAt', 'ASC']],
       include: [
         {
           model: Student,
