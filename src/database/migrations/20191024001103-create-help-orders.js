@@ -17,11 +17,11 @@ module.exports = {
         onDelete: 'SET NULL',
       },
       question: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       answer: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
         defaultValue: null,
       },
